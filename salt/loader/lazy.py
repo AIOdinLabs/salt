@@ -790,7 +790,10 @@ class LazyLoader(salt.utils.lazy.LazyDict):
                     spec = file_finder.find_spec(mod_namespace)
                     if spec is None:
                         raise ImportError()
-                    mod = importlib.util.module_from_spec(spec)
+                    if mod_namespace in sys.modules:
+                        mod = sys.modules[mod_namespace]
+                    else:
+                        mod = importlib.util.module_from_spec(spec)
                     spec.loader.exec_module(mod)
                     # pylint: enable=no-member
                     sys.modules[mod_namespace] = mod
@@ -805,7 +808,10 @@ class LazyLoader(salt.utils.lazy.LazyDict):
                     )
                     if spec is None:
                         raise ImportError()
-                    mod = importlib.util.module_from_spec(spec)
+                    if mod_namespace in sys.modules:
+                        mod = sys.modules[mod_namespace]
+                    else:
+                        mod = importlib.util.module_from_spec(spec)
                     spec.loader.exec_module(mod)
                     # pylint: enable=no-member
                     sys.modules[mod_namespace] = mod
